@@ -79,6 +79,8 @@
          countries = map.selectAll('path').data(countries);
          countries.enter()
                   .append('path')
+                  .attr('stroke-weight', '1px')
+                  .attr('stroke', '#000')
                   .attr('d', path)
                   .exit();
      });
