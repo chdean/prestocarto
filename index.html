@@ -74,7 +74,7 @@
 
      d3.json("world-50m.json", function(error, world) {
          if (error) return;
-         var countries = topojson.feature(world, world.objects.countries).features;
+         var countries = topojson.mesh(world, world.objects.countries);
          var map = svg.append('g').attr('class', 'boundary');
          countries = map.selectAll('path').data(countries);
          countries.enter()
