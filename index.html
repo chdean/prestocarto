@@ -16,6 +16,12 @@
 
  .red { color: #f00; }
 
+ .boundary {
+     stroke-weight: 1px;
+     stroke: #000;
+     fill: none;
+ }
+ 
  footer { text-align: right; }
  
 </style>
@@ -74,14 +80,11 @@
 
      d3.json("world-50m.json", function(error, world) {
          if (error) return;
-         var countries = topojson.mesh(world, world.objects.countries);
+         var countries = topojson.features(world, world.objects.countries).features;
          var map = svg.append('g').attr('class', 'boundary');
          countries = map.selectAll('path').data(countries);
          countries.enter()
                   .append('path')
-                  .attr('stroke-weight', '1px')
-                  .attr('stroke', '#000')
-                  .attr('fill', 'none')
                   .attr('d', path)
                   .exit();
      });
