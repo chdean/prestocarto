@@ -25,7 +25,11 @@
     <div id="content" >
     <div id="input">
         <p>paste a csv, make a map</p>
-        <strong>field names</strong>
+        <select id="fileType">
+            <option value="csv">csv</option>
+            <option value="tsv">tsv</option>
+        </select>
+        <strong>fields</strong>
         latitude: <input id="latField" type="text" value="lat" />
         longitude: <input id="lngField" type="text" value="lng" />
         <textarea id="dataBox" cols="80" rows="10"></textarea><br />
@@ -38,9 +42,15 @@
     <script>
 
      function makeMap() {
+         var fileType = document.getElementById('fileType').value;
          var latField = document.getElementById('latField').value;
          var lngField = document.getElementById('lngField').value;
-         var points = d3.csvParse(document.getElementById('dataBox').value);
+
+         var parseFunction = d3.csvParse;
+         if (fileType == 'tsv') {
+             parseFunction = d3.tsvParse;
+         }
+         var points = parseFunction(document.getElementById('dataBox').value);
 
          d3.selectAll('#points').remove();
          svg.selectAll('points')
