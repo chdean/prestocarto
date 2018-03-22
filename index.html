@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+ body {
+     background: #fcfcfa;
+     font-family: sans-serif;
+ }
+
+ #content {
+     width: 900px;
+     margin-left: auto;
+     margin-right: auto;
+     text-align: center;
+ }
+
+ .boundary {
+     fill: none;
+     stroke: #fff;
+     stroke-width: .5px;
+ }
+
+ .red { color: #f00; }
+
+</style>
+<body>
+    <h1>prestocarto.<span class="red">xyz</span></h1>
+    <div id="content" >
+    <div id="input">
+        <p>paste your csv, make a map</p>
+        <strong>field names</strong>
+        latitude: <input id="latField" type="text" value="lat" />
+        longitude: <input id="lngField" type="text" value="lng" />
+        <textarea id="dataBox" rows="20" cols="80">lat,lng</textarea><br />
+        <button type="button" onclick="makeMap()" >Map it!</button>
+    </div>
+    <div id="map" ></div>
+    </div>
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script>
+
+     function makeMap() {
+         var latField = document.getElementById('latField').value;
+         var lngField = document.getElementById('lngField').value;
+         var points = d3.csvParse(document.getElementById('dataBox').value);
+
+         d3.selectAll('#points').remove();
+         svg.selectAll('points')
+            .data(points)
+            .enter().append('circle', 'points')
+            .attr('id', 'points')
+            .attr('fill', '#f00')
+            .attr('r', 3)
+            .attr('transform', function(d) {
+                return 'translate(' + projection([
+                    parseFloat(d[lngField]),
+                    parseFloat(d[latField])
+                ]) + ')';})
+            .exit();
+         return(points);
+     }
+
+     var height = 800,
+         width = 900;
+
+     var projection = d3.geoNaturalEarth1()
+                        .scale(150);
+
+     var path = d3.geoPath().projection(projection);
+
+     var svg = d3.select('#map')
+                 .append('svg')
+                 .attr('width', width)
+                 .attr('height', height);
+
+     d3.json("world-50m.json", function(error, world) {
+         if (error) return;
+         var countries = topojson.feature(world, world.objects.countries).features;
+         var map = svg.append('g').attr('class', 'boundary');
+         countries = map.selectAll('path').data(countries);
+         countries.enter()
+                  .append('path')
+                  .attr('d', path)
+                  .attr('stroke', '#000')
+                  .exit();
+     });
+    </script>
+</body>
