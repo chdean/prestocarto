@@ -16,12 +16,6 @@
 
  .red { color: #f00; }
 
- .boundary {
-     stroke-weight: 1px;
-     stroke: #000;
-     fill: none;
- }
- 
  footer { text-align: right; }
  
 </style>
@@ -82,9 +76,12 @@
          if (error) return;
          var countries = topojson.features(world, world.objects.countries).features;
          var map = svg.append('g');
-         countries = map.selectAll('path').data(countries).attr('class', 'boundary');
+         countries = map.selectAll('path').data(countries);
          countries.enter()
                   .append('path')
+                  .attr('stroke', '#000')
+                  .attr('stroke-weight', '1px')
+                  .attr('fill', 'none')
                   .attr('d', path)
                   .exit();
      });
